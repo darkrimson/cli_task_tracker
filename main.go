@@ -26,7 +26,8 @@ func main() {
 		newTask, err := repo.AddTask(argumentsWithoutProg[1])
 		util.LogError(err)
 
-		repo.SaveToFile("tasks.json")
+		err = repo.SaveToFile("tasks.json")
+		util.LogError(err)
 		fmt.Printf("Задача успешно добавлена (ID: %d)\n", newTask)
 
 	case "update":
@@ -43,7 +44,62 @@ func main() {
 		err = repo.UpdateTaskDescription(taskID, description)
 		util.LogError(err)
 
-		repo.SaveToFile("task.json")
+		err = repo.SaveToFile("tasks.json")
+		util.LogError(err)
 		fmt.Printf("Задача успешно обновлена (ID: %d)\n", taskID)
+
+	case "delete":
+		if len(argumentsWithoutProg) == 1 {
+			util.LogError(errors.New("описание задачи не написано"))
+		}
+		taskID, err := strconv.Atoi(argumentsWithoutProg[1])
+		util.LogError(err)
+
+		err = repo.DeleteTask(taskID)
+		util.LogError(err)
+
+		err = repo.SaveToFile("tasks.json")
+		util.LogError(err)
+		fmt.Printf("Задача успешно удалена (ID: %d)\n", taskID)
+
+	case "mark-in-progress":
+		if len(argumentsWithoutProg) == 1 {
+			util.LogError(errors.New("task id not provided"))
+		}
+		taskID, err := strconv.Atoi(argumentsWithoutProg[1])
+		util.LogError(err)
+
+		err = repo.UpdateTaskStatus(taskID, "in-progress")
+		util.LogError(err)
+
+	case "mark-done":
+		if len(argumentsWithoutProg) == 1 {
+			util.LogError(errors.New("task id not provided"))
+		}
+		taskID, err := strconv.Atoi(argumentsWithoutProg[1])
+		util.LogError(err)
+
+		err = repo.UpdateTaskStatus(taskID, "done")
+		util.LogError(err)
+
+	case "list":
+		if len(argumentsWithoutProg) > 1 {
+			switch argumentsWithoutProg[2] {
+			case "done":
+				err := repo.CompletedTask()
+				util.LogError(err)
+			case "todo":
+				err := repo.TodoTask()
+				util.LogError(err)
+			default:
+				err := repo.InprogressTask()
+				util.LogError(err)
+			}
+
+		}
+		err := repo.GetAllTask()
+		util.LogError(err)
+	default:
+		util.LogError(errors.New("option provided not valid"))
 	}
 }

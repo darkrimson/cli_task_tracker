@@ -61,34 +61,42 @@ func (t *TaskRepository) DeleteTask(ID int) error {
 	return fmt.Errorf("task with id %d not found", ID)
 }
 
-func (t TaskRepository) GetAllTask() {
+func (t TaskRepository) GetAllTask() error {
 	for _, task := range t.Tasks {
 		fmt.Printf("%d: %s [%s]\n", task.ID, task.Description, task.Status)
+		return nil
 	}
+	return fmt.Errorf("ошибка при показе всего списка")
 }
 
-func (t TaskRepository) CompletedTask() {
+func (t TaskRepository) CompletedTask() error {
 	for _, task := range t.Tasks {
 		if task.Status == "done" {
 			fmt.Printf("%d: %s [%s]\n", task.ID, task.Description, task.Status)
+			return nil
 		}
 	}
+	return fmt.Errorf("ошибка при показе списка")
 }
 
-func (t TaskRepository) InprogressTask() {
+func (t TaskRepository) InprogressTask() error {
 	for _, task := range t.Tasks {
 		if task.Status == "in progress" {
 			fmt.Printf("%d: %s [%s]\n", task.ID, task.Description, task.Status)
+			return nil
 		}
 	}
+	return fmt.Errorf("ошибка при показе всего списка")
 }
 
-func (t TaskRepository) TodoTask() {
+func (t TaskRepository) TodoTask() error {
 	for _, task := range t.Tasks {
 		if task.Status == "todo" {
 			fmt.Printf("%d: %s [%s]\n", task.ID, task.Description, task.Status)
+			return nil
 		}
 	}
+	return fmt.Errorf("ошибка при показе всего списка")
 }
 
 func (t *TaskRepository) LoadFromFile(filename string) error {
