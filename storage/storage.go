@@ -1,13 +1,14 @@
-package main
+package storage
 
 import (
+	"cli_task_tracker/datamodel"
 	"encoding/json"
 	"fmt"
 	"os"
 )
 
-func LoadTask(filename string) ([]Task, error) {
-	var tasks []Task
+func LoadTask(filename string) ([]datamodel.Task, error) {
+	var tasks []datamodel.Task
 
 	file, err := os.Open(filename)
 	if err != nil {
@@ -22,10 +23,10 @@ func LoadTask(filename string) ([]Task, error) {
 	if err != nil {
 		fmt.Println("Ошибка при преобразовании JSON: ", err)
 	}
-	return tasks, err
+	return tasks, nil
 }
 
-func SaveTask(filename string, tasks []Task) {
+func SaveTask(filename string, tasks []datamodel.Task) error {
 	file, err := os.Create(filename)
 	if err != nil {
 		fmt.Println("Ошибка при сохрании файла: ", err)
@@ -36,4 +37,5 @@ func SaveTask(filename string, tasks []Task) {
 	if err != nil {
 		fmt.Println("Ошибка при преобразовании в JSON ", err)
 	}
+	return nil
 }
