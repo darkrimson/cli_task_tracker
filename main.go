@@ -28,38 +28,38 @@ func main() {
 
 	argumentsWithoutProg := os.Args[1:]
 	if len(argumentsWithoutProg) == 0 {
-		util.LogError(errors.New("необходимо написать команды"))
+		util.LogError(errors.New("it is necessary to write commands"))
 	}
 
 	switch argument := argumentsWithoutProg[0]; argument {
 	case "add":
 		if len(argumentsWithoutProg) == 1 {
-			util.LogError(errors.New("описание задачи не написано"))
+			util.LogError(errors.New("the task description is not written"))
 		}
 		newTask, err := repo.AddTask(argumentsWithoutProg[1])
 		util.LogError(err)
 
-		fmt.Printf("Задача успешно добавлена (ID: %d)\n", newTask)
+		fmt.Printf("Task added successfully (ID: %d)\n", newTask)
 
 	case "update":
 		if len(argumentsWithoutProg) == 1 {
-			util.LogError(errors.New("описание задачи не написано"))
+			util.LogError(errors.New("the task description is not written"))
 		}
 		taskID, err := strconv.Atoi(argumentsWithoutProg[1])
 		util.LogError(err)
 		description := argumentsWithoutProg[2]
 		if len(description) == 0 {
-			util.LogError(errors.New("неверное описание"))
+			util.LogError(errors.New("incorrect description"))
 		}
 
 		err = repo.UpdateTaskDescription(taskID, description)
 		util.LogError(err)
 
-		fmt.Printf("Задача успешно обновлена (ID: %d)\n", taskID)
+		fmt.Printf("The task has been successfully updated (ID: %d)\n", taskID)
 
 	case "delete":
 		if len(argumentsWithoutProg) == 1 {
-			util.LogError(errors.New("описание задачи не написано"))
+			util.LogError(errors.New("the task description is not written"))
 		}
 		taskID, err := strconv.Atoi(argumentsWithoutProg[1])
 		util.LogError(err)
@@ -67,11 +67,11 @@ func main() {
 		err = repo.DeleteTask(taskID)
 		util.LogError(err)
 
-		fmt.Printf("Задача успешно удалена (ID: %d)\n", taskID)
+		fmt.Printf("The task was successfully deleted (ID: %d)\n", taskID)
 
 	case "mark-in-progress":
 		if len(argumentsWithoutProg) == 1 {
-			util.LogError(errors.New("такого статуса не существует"))
+			util.LogError(errors.New("there is no such status"))
 		}
 		taskID, err := strconv.Atoi(argumentsWithoutProg[1])
 		util.LogError(err)
@@ -81,7 +81,7 @@ func main() {
 
 	case "mark-done":
 		if len(argumentsWithoutProg) == 1 {
-			util.LogError(errors.New("такого статуса не существует"))
+			util.LogError(errors.New("there is no such status"))
 		}
 		taskID, err := strconv.Atoi(argumentsWithoutProg[1])
 		util.LogError(err)
@@ -105,7 +105,7 @@ func main() {
 				util.LogError(err)
 				util.PrintTasks(tasks)
 			default:
-				util.LogError(errors.New("неизвестный фильтр"))
+				util.LogError(errors.New("unknown filter"))
 			}
 		} else {
 			tasks, err := repo.GetAllTask()
@@ -113,7 +113,7 @@ func main() {
 			util.PrintTasks(tasks)
 		}
 	default:
-		fmt.Println("Неизвестная команда:", argument)
+		fmt.Println("unknown command:", argument)
 		util.PrintHelp()
 	}
 }

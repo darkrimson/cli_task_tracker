@@ -25,7 +25,7 @@ type TaskRepository struct {
 func (t *TaskRepository) AddTask(taskDescription string) (int, error) {
 	for _, t := range t.Tasks {
 		if t.Description == taskDescription {
-			return 0, fmt.Errorf("задача с таким названием %s уже существует", t.Description)
+			return 0, fmt.Errorf("a task with the same name %s already exists", t.Description)
 		}
 	}
 
@@ -48,7 +48,7 @@ func (t *TaskRepository) UpdateTaskDescription(ID int, description string) error
 			return nil
 		}
 	}
-	return fmt.Errorf("не удалось изменить название задачи")
+	return fmt.Errorf("couldn't change the task name")
 }
 
 func (t *TaskRepository) UpdateTaskStatus(ID int, status string) error {
@@ -59,7 +59,7 @@ func (t *TaskRepository) UpdateTaskStatus(ID int, status string) error {
 			return nil
 		}
 	}
-	return fmt.Errorf("не удалось изменить статус задачи")
+	return fmt.Errorf("couldn't change the task status")
 }
 
 func (t *TaskRepository) DeleteTask(ID int) error {
@@ -74,7 +74,7 @@ func (t *TaskRepository) DeleteTask(ID int) error {
 
 func (t TaskRepository) GetAllTask() ([]datamodel.Task, error) {
 	if len(t.Tasks) == 0 {
-		return nil, fmt.Errorf("список пуст")
+		return nil, fmt.Errorf("list is empty")
 	}
 	return t.Tasks, nil
 }
@@ -87,7 +87,7 @@ func (t TaskRepository) GetTasksByStatus(status string) ([]datamodel.Task, error
 		}
 	}
 	if len(result) == 0 {
-		return nil, fmt.Errorf("нет задач со статусом %s", status)
+		return nil, fmt.Errorf("there are no issues with the status %s", status)
 	}
 	return result, nil
 }
