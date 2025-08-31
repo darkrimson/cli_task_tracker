@@ -1,6 +1,6 @@
 # CLI Task Tracker
 
-A simple command-line task tracker (from https://roadmap.sh/projects/task-tracker) written in Go. Manage tasks, track their status, and save them to a JSON file.
+A simple command-line task tracker written in Go. This is a sample solution for the [task-tracker project](https://roadmap.sh/projects/task-tracker) from [roadmap.sh](https://roadmap.sh/). Manage tasks, track their status, and save them to a JSON file.
 
 ## Features
 
