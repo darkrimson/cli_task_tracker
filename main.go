@@ -10,8 +10,10 @@ import (
 )
 
 func main() {
-	repo := &repository.TaskRepository{}
-	repo.LoadFromFile("tasks.json")
+	var repo repository.TaskRepositoryInterface = &repository.TaskRepository{}
+
+	err := repo.LoadFromFile("tasks.json")
+	util.LogError(err)
 
 	argumentsWithoutProg := os.Args[1:]
 	if len(argumentsWithoutProg) == 0 {
@@ -38,7 +40,7 @@ func main() {
 		util.LogError(err)
 		description := argumentsWithoutProg[2]
 		if len(description) == 0 {
-			util.LogError(errors.New("description not provided"))
+			util.LogError(errors.New("неверное описание"))
 		}
 
 		err = repo.UpdateTaskDescription(taskID, description)
@@ -64,7 +66,7 @@ func main() {
 
 	case "mark-in-progress":
 		if len(argumentsWithoutProg) == 1 {
-			util.LogError(errors.New("task id not provided"))
+			util.LogError(errors.New("такого статуса не существует"))
 		}
 		taskID, err := strconv.Atoi(argumentsWithoutProg[1])
 		util.LogError(err)
@@ -77,7 +79,7 @@ func main() {
 
 	case "mark-done":
 		if len(argumentsWithoutProg) == 1 {
-			util.LogError(errors.New("task id not provided"))
+			util.LogError(errors.New("такого статуса не существует"))
 		}
 		taskID, err := strconv.Atoi(argumentsWithoutProg[1])
 		util.LogError(err)
@@ -92,22 +94,26 @@ func main() {
 		if len(argumentsWithoutProg) > 1 {
 			switch argumentsWithoutProg[1] {
 			case "done":
-				err := repo.CompletedTask()
+				tasks, err := repo.GetTasksByStatus("done")
 				util.LogError(err)
+				util.PrintTasks(tasks)
 			case "todo":
-				err := repo.TodoTask()
+				tasks, err := repo.GetTasksByStatus("todo")
 				util.LogError(err)
+				util.PrintTasks(tasks)
 			case "in-progress":
-				err := repo.InprogressTask()
+				tasks, err := repo.GetTasksByStatus("in-progress")
 				util.LogError(err)
+				util.PrintTasks(tasks)
 			default:
 				util.LogError(errors.New("неизвестный фильтр"))
 			}
 		} else {
-			err := repo.GetAllTask()
+			tasks, err := repo.GetAllTask()
 			util.LogError(err)
+			util.PrintTasks(tasks)
 		}
 	default:
-		util.LogError(errors.New("option provided not valid"))
+		util.LogError(errors.New("неправильный ввод данных"))
 	}
 }

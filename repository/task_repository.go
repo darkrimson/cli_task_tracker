@@ -7,6 +7,17 @@ import (
 	"time"
 )
 
+type TaskRepositoryInterface interface {
+	AddTask(description string) (int, error)
+	UpdateTaskDescription(ID int, description string) error
+	UpdateTaskStatus(ID int, status string) error
+	DeleteTask(ID int) error
+	GetAllTask() ([]datamodel.Task, error)
+	GetTasksByStatus(status string) ([]datamodel.Task, error)
+	LoadFromFile(filename string) error
+	SaveToFile(filename string) error
+}
+
 type TaskRepository struct {
 	Tasks []datamodel.Task
 }
@@ -61,57 +72,24 @@ func (t *TaskRepository) DeleteTask(ID int) error {
 	return fmt.Errorf("task with id %d not found", ID)
 }
 
-func (t TaskRepository) GetAllTask() error {
+func (t TaskRepository) GetAllTask() ([]datamodel.Task, error) {
 	if len(t.Tasks) == 0 {
-		return fmt.Errorf("список пуст")
+		return nil, fmt.Errorf("список пуст")
 	}
-
-	for _, task := range t.Tasks {
-		fmt.Printf("%d: %s [%s]\n", task.ID, task.Description, task.Status)
-	}
-	return nil
+	return t.Tasks, nil
 }
 
-func (t TaskRepository) CompletedTask() error {
-	found := false
+func (t TaskRepository) GetTasksByStatus(status string) ([]datamodel.Task, error) {
+	var result []datamodel.Task
 	for _, task := range t.Tasks {
-		if task.Status == "done" {
-			fmt.Printf("%d: %s [%s]\n", task.ID, task.Description, task.Status)
-			found = true
+		if task.Status == status {
+			result = append(result, task)
 		}
 	}
-	if !found {
-		return fmt.Errorf("нет выполненный задач")
+	if len(result) == 0 {
+		return nil, fmt.Errorf("нет задач со статусом %s", status)
 	}
-	return nil
-}
-
-func (t TaskRepository) InprogressTask() error {
-	found := false
-	for _, task := range t.Tasks {
-		if task.Status == "in-progress" {
-			fmt.Printf("%d: %s [%s]\n", task.ID, task.Description, task.Status)
-			found = true
-		}
-	}
-	if !found {
-		return fmt.Errorf("нет задач в процессе")
-	}
-	return nil
-}
-
-func (t TaskRepository) TodoTask() error {
-	found := false
-	for _, task := range t.Tasks {
-		if task.Status == "todo" {
-			fmt.Printf("%d: %s [%s]\n", task.ID, task.Description, task.Status)
-			found = true
-		}
-	}
-	if !found {
-		return fmt.Errorf("нет задач в статусе todo")
-	}
-	return nil
+	return result, nil
 }
 
 func (t *TaskRepository) LoadFromFile(filename string) error {
