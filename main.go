@@ -72,6 +72,9 @@ func main() {
 		err = repo.UpdateTaskStatus(taskID, "in-progress")
 		util.LogError(err)
 
+		err = repo.SaveToFile("tasks.json")
+		util.LogError(err)
+
 	case "mark-done":
 		if len(argumentsWithoutProg) == 1 {
 			util.LogError(errors.New("task id not provided"))
@@ -82,23 +85,28 @@ func main() {
 		err = repo.UpdateTaskStatus(taskID, "done")
 		util.LogError(err)
 
+		err = repo.SaveToFile("tasks.json")
+		util.LogError(err)
+
 	case "list":
 		if len(argumentsWithoutProg) > 1 {
-			switch argumentsWithoutProg[2] {
+			switch argumentsWithoutProg[1] {
 			case "done":
 				err := repo.CompletedTask()
 				util.LogError(err)
 			case "todo":
 				err := repo.TodoTask()
 				util.LogError(err)
-			default:
+			case "in-progress":
 				err := repo.InprogressTask()
 				util.LogError(err)
+			default:
+				util.LogError(errors.New("неизвестный фильтр"))
 			}
-
+		} else {
+			err := repo.GetAllTask()
+			util.LogError(err)
 		}
-		err := repo.GetAllTask()
-		util.LogError(err)
 	default:
 		util.LogError(errors.New("option provided not valid"))
 	}
