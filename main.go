@@ -10,7 +10,18 @@ import (
 )
 
 func main() {
+	const (
+		StatusTodo       = "todo"
+		StatusInProgress = "in-progress"
+		StatusDone       = "done"
+	)
+
 	var repo repository.TaskRepositoryInterface = &repository.TaskRepository{}
+
+	defer func() {
+		err := repo.SaveToFile("tasks.json")
+		util.LogError(err)
+	}()
 
 	err := repo.LoadFromFile("tasks.json")
 	util.LogError(err)
@@ -28,8 +39,6 @@ func main() {
 		newTask, err := repo.AddTask(argumentsWithoutProg[1])
 		util.LogError(err)
 
-		err = repo.SaveToFile("tasks.json")
-		util.LogError(err)
 		fmt.Printf("Задача успешно добавлена (ID: %d)\n", newTask)
 
 	case "update":
@@ -46,8 +55,6 @@ func main() {
 		err = repo.UpdateTaskDescription(taskID, description)
 		util.LogError(err)
 
-		err = repo.SaveToFile("tasks.json")
-		util.LogError(err)
 		fmt.Printf("Задача успешно обновлена (ID: %d)\n", taskID)
 
 	case "delete":
@@ -60,8 +67,6 @@ func main() {
 		err = repo.DeleteTask(taskID)
 		util.LogError(err)
 
-		err = repo.SaveToFile("tasks.json")
-		util.LogError(err)
 		fmt.Printf("Задача успешно удалена (ID: %d)\n", taskID)
 
 	case "mark-in-progress":
@@ -74,9 +79,6 @@ func main() {
 		err = repo.UpdateTaskStatus(taskID, "in-progress")
 		util.LogError(err)
 
-		err = repo.SaveToFile("tasks.json")
-		util.LogError(err)
-
 	case "mark-done":
 		if len(argumentsWithoutProg) == 1 {
 			util.LogError(errors.New("такого статуса не существует"))
@@ -87,22 +89,19 @@ func main() {
 		err = repo.UpdateTaskStatus(taskID, "done")
 		util.LogError(err)
 
-		err = repo.SaveToFile("tasks.json")
-		util.LogError(err)
-
 	case "list":
 		if len(argumentsWithoutProg) > 1 {
 			switch argumentsWithoutProg[1] {
-			case "done":
-				tasks, err := repo.GetTasksByStatus("done")
+			case StatusDone:
+				tasks, err := repo.GetTasksByStatus(StatusDone)
 				util.LogError(err)
 				util.PrintTasks(tasks)
-			case "todo":
-				tasks, err := repo.GetTasksByStatus("todo")
+			case StatusTodo:
+				tasks, err := repo.GetTasksByStatus(StatusTodo)
 				util.LogError(err)
 				util.PrintTasks(tasks)
-			case "in-progress":
-				tasks, err := repo.GetTasksByStatus("in-progress")
+			case StatusInProgress:
+				tasks, err := repo.GetTasksByStatus(StatusInProgress)
 				util.LogError(err)
 				util.PrintTasks(tasks)
 			default:
@@ -114,6 +113,7 @@ func main() {
 			util.PrintTasks(tasks)
 		}
 	default:
-		util.LogError(errors.New("неправильный ввод данных"))
+		fmt.Println("Неизвестная команда:", argument)
+		util.PrintHelp()
 	}
 }
