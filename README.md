@@ -62,9 +62,9 @@ Tasks are stored in a `tasks.json` file in the project directory. The file is au
 
 ```bash
 ./task-cli add "Buy groceries"
-Задача успешно добавлена (ID: 1)
+Task added successfully (ID: 1)
 ./task-cli add "Cook dinner"
-Задача успешно добавлена (ID: 2)
+Task added successfully (ID: 2)
 ./task-cli list
 1: Buy groceries [todo]
 2: Cook dinner [todo]
